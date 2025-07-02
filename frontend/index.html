@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>My cool website</title>
-  </head>
-  <body>
-    <!--
-      All the interactions with the below elements
-      happen in main.js
-    -->
+<head>
+  <meta charset="UTF-8" />
+  <title>My cool website</title>
+  <script src="https://cdn.signalfx.com/o11y-gdi-rum/v0.22.0/splunk-otel-web.js" crossorigin="anonymous"></script>
+  <script>
+    SplunkRum.init({
+      realm: "us1",
+      rumAccessToken: "***",
+      applicationName: "derek-test",
+      deploymentEnvironment: "derek-test",
+      instrumentations: {
+        fetch: {
+          applyCustomAttributesOnSpan(span, _request, _result) {
+            // Add current trace as link if no Server-Timing header existed
+            span.setAttribute('link.traceId', span.spanContext().traceId);
+            span.setAttribute('link.spanId', '0000000000000000');
+            console.log("Added link.traceId to fetch result:", span.spanContext().traceId);
+          }
+        },
+        xhr: {
+          applyCustomAttributesOnSpan(span, _xhr) {
+            // Add current trace as link if no Server-Timing header existed
+            span.setAttribute('link.traceId', span.spanContext().traceId);
+            span.setAttribute('link.spanId', '0000000000000000');
+            console.log("Added link.traceId to xhr result:", span.spanContext().traceId);
+          }
+        }
+      }
+    });
 
-    <p>Type in your name here to get an unexpected message.</p>
+  </script>
+</head>
+<body>
+<!--
+  All the interactions with the below elements
+  happen in main.js
+-->
 
-    <input id="name-field" type="text" value="" />
-    <button id="submit-button">Send to the server!</button>
+<p>Type in your name here to get an unexpected message.</p>
 
-    <p>Your message from the server:</p>
-    <p id="message-area"></p>
+<input id="name-field" type="text" value="" />
+<button id="submit-button">Send to the server!</button>
 
-    <script type="text/javascript" src="main.js"></script>
-  </body>
+<p>Your message from the server:</p>
+<p id="message-area"></p>
+
+<script type="text/javascript" src="main.js"></script>
+</body>
 </html>

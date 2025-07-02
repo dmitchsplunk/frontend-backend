@@ -2,3 +2,11 @@
 */yarn.lock
 */.venv
 */__pycache__
+.idea/
+package-lock.json
+frontend/index-custom.html
+.DS_Store
+.gradle/
+.idea/
+target/
+splunk-otel-javaagent.jar

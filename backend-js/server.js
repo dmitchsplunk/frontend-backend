@@ -31,10 +31,35 @@ app.post('/hello', cors(corsOptions), function (request, response) {
   // Extract the name from the { name: 'your name' } obj that's sent
   const name = request.body.name;
 
+  console.log('Request Headers:', request.headers);
+
+  const axios = require('axios');
+
+  axios.get('http://localhost:8090/ping', {
+      headers: {
+          'traceparent': request.headers['traceparent'],
+      }
+      })
+      .then(response => {
+        console.log('Status Code:', response.status);
+        console.log('Java Response Headers:', response.headers);
+      })
+      .catch(error => {
+        console.error('Error:', error.message);
+      });
+
   // Send a JSON response, that contains the message (you could call
   // this 'message' anything, so long as the frontend knows what
   // it's labelled as)
   response.json({ message: 'Hello, ' + name });
+    response.on('finish', () => {
+        console.log('Node.js Response Headers:');
+        const headers = response.getHeaders();
+        for (const headerName in headers) {
+            console.log(`${headerName}:`, headers[headerName]);
+        }
+    });
+
 });
 
 // Now we've specified the routes above, trigger the server to start
