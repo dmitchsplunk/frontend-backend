@@ -18,7 +18,8 @@
             span.setAttribute('link.traceId', span.spanContext().traceId);
             span.setAttribute('link.spanId', '0000000000000000');
             console.log("Added link.traceId to fetch result:", span.spanContext().traceId);
-          }
+          },
+          propagateTraceHeaderCorsUrls: [/.*/], //Match-ALL-URLs//
         },
         xhr: {
           applyCustomAttributesOnSpan(span, _xhr) {
